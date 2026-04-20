@@ -18,7 +18,7 @@ export const PublishModal: React.FC<Props> = ({ onClose }) => {
     const handlePublish = async () => {
         setIsPublishing(true);
         try {
-            const result = await request.post("/api/forms", {
+            const result = await request.post("/forms", {
                 title: canvasTitle,
                 components: components,
             });

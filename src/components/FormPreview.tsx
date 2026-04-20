@@ -100,7 +100,7 @@ export const FormPreview: React.FC<Props> = ({
     try {
       // 只有在 hideHeader 为 true (即分享页/正式填写环境) 时才提交到数据库
       if (hideHeader && urlFormId) {
-        await request.post("/api/forms/submit", {
+        await request.post("/forms/submit", {
           formId: urlFormId,
           content: formData
         });

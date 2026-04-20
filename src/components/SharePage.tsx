@@ -15,7 +15,7 @@ export const SharePage: React.FC = () => {
         const fetchForm = async () => {
             try {
                 // 开启 silent: true 阻断 antd 的默认弹窗报错
-                const result = await request.get(`/api/forms/${formId}`, {
+                const result = await request.get(`/forms/${formId}`, {
                     silent: true // C端页面，由下方的 catch 结合 UI 亲自处理错误体验更好
                 });
 

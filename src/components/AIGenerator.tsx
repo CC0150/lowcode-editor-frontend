@@ -96,7 +96,7 @@ export function AIGenerator() {
       let accumulatedText = "";
 
       try {
-        const response: any = await request.post("/api/patch-form",
+        const response: any = await request.post("/patch-form",
           { prompt, currentComponents: previewData },
           {
             signal: abortControllerRef.current.signal,
@@ -195,7 +195,7 @@ export function AIGenerator() {
       let accumulatedText = "";
 
       try {
-        const response: any = await request.post("/api/generate-form",
+        const response: any = await request.post("/generate-form",
           { prompt },
           {
             signal: abortControllerRef.current.signal,

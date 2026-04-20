@@ -49,7 +49,7 @@ export const SetterPanel = () => {
     if (!selectedComponent) return;
     setIsOptionsAILoading(true);
     try {
-      const result = await request.post("/api/modify-component", {
+      const result = await request.post("/modify-component", {
         component: selectedComponent,
         prompt: `帮我批量生成选项，主题是："${prompt}"。请直接重写 props.options 数组，每个选项包含 label 和 value (value尽量使用英文或拼音缩写)。`,
       });
@@ -91,7 +91,7 @@ export const SetterPanel = () => {
     if (!copilotPrompt.trim() || !selectedComponent) return;
     setIsCopilotLoading(true);
     try {
-      const result = await request.post("/api/modify-component", {
+      const result = await request.post("/modify-component", {
         component: selectedComponent,
         prompt: copilotPrompt,
       });
@@ -118,7 +118,7 @@ export const SetterPanel = () => {
     if (!regexPrompt.trim() || !selectedComponent) return;
     setIsRegexLoading(true);
     try {
-      const result = await request.post("/api/generate-regex", {
+      const result = await request.post("/generate-regex", {
         prompt: regexPrompt
       });
 
