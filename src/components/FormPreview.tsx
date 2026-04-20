@@ -4,13 +4,15 @@ import { ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
 import { type ComponentSchema } from "../types/editor";
 import { FormControl } from "./FormControl";
 import { ErrorBoundary } from "react-error-boundary";
+import { request } from "../utils/request";
+import { useParams } from "react-router-dom";
 
 interface Props {
   onBack?: () => void;
   overrideComponents?: ComponentSchema[];
   isEmbedded?: boolean; // 是否嵌入模式 (用于画布流式渲染)
-  hideHeader?: boolean; // 新增：是否隐藏顶部的"退出预览"栏 (用于独立分享页)
-  overrideTitle?: string; // 新增：独立分享页需要传入从接口请求到的标题
+  hideHeader?: boolean; // 是否隐藏顶部的"退出预览"栏 (用于独立分享页)
+  overrideTitle?: string; // 独立分享页需要传入从接口请求到的标题
 }
 
 export const FormPreview: React.FC<Props> = ({
@@ -20,6 +22,8 @@ export const FormPreview: React.FC<Props> = ({
   hideHeader = false,
   overrideTitle,
 }) => {
+  const { formId: urlFormId } = useParams<{ formId: string }>();
+
   const { components: storeComponents, canvasTitle } = useEditorStore();
   const components = overrideComponents || storeComponents;
   // 决定使用传入的标题还是本地编辑器的标题
@@ -47,7 +51,7 @@ export const FormPreview: React.FC<Props> = ({
     return formData[comp.visibleRule.sourceId] === comp.visibleRule.value;
   };
 
-  const handleSubmit = (e: React.SubmitEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
     let firstErrorId: string | null = null;
@@ -93,9 +97,20 @@ export const FormPreview: React.FC<Props> = ({
       });
       return;
     }
-
-    console.log("=== 提交的表单数据 ===", formData);
-    setIsSubmitted(true);
+    try {
+      // 只有在 hideHeader 为 true (即分享页/正式填写环境) 时才提交到数据库
+      if (hideHeader && urlFormId) {
+        await request.post("/api/forms/submit", {
+          formId: urlFormId,
+          content: formData
+        });
+      }
+      
+      console.log("=== 提交的表单数据 ===", formData);
+      setIsSubmitted(true);
+    } catch (err) {
+      alert("提交失败，请稍后重试");
+    }
   };
 
   if (isSubmitted) {
@@ -127,7 +142,7 @@ export const FormPreview: React.FC<Props> = ({
                 onBack();
               }
             }}
-            className="mt-8 px-8 py-2.5 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand/90 transition-colors shadow-sm w-full"
+            className="mt-8 px-8 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-600/90 transition-colors shadow-sm w-full"
           >
             {isEmbedded ? "返回重新试填" : (hideHeader ? "再填一份" : "返回编辑器")}
           </button>
@@ -249,7 +264,7 @@ export const FormPreview: React.FC<Props> = ({
             <div className="mt-8 pt-6 border-t border-gray-100">
               <button
                 type="submit"
-                className="w-full bg-brand text-white py-3.5 md:py-4 rounded-xl font-bold text-base md:text-lg shadow-lg shadow-brand/30 hover:bg-brand/90 hover:shadow-brand/40 transition-all active:scale-[0.98]"
+                className="w-full bg-indigo-600 text-white py-3.5 md:py-4 rounded-xl font-bold text-base md:text-lg shadow-lg shadow-indigo-600/30 hover:bg-indigo-600/90 hover:shadow-indigo-600/40 transition-all active:scale-[0.98]"
               >
                 提交表单
               </button>
