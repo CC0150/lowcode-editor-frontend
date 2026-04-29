@@ -7,9 +7,10 @@ interface Props {
   isSelected: boolean;
   onClick: (e: React.MouseEvent) => void;
   children: React.ReactNode;
+  gap?: number;
 }
 
-export const SortableWrapper: React.FC<Props> = ({ id, isSelected, onClick, children }) => {
+export const SortableWrapper: React.FC<Props> = ({ id, isSelected, onClick, children, gap = 24 }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
   const style = {
@@ -17,6 +18,7 @@ export const SortableWrapper: React.FC<Props> = ({ id, isSelected, onClick, chil
     transition,
     zIndex: isDragging ? 10 : 1,
     opacity: isDragging ? 0.5 : 1,
+    marginBottom: gap,
   };
 
   return (
@@ -26,7 +28,7 @@ export const SortableWrapper: React.FC<Props> = ({ id, isSelected, onClick, chil
       {...attributes}
       {...listeners}
       onClick={onClick}
-      className={`relative p-4 mb-3 bg-white border rounded-lg cursor-move transition-colors group ${
+      className={`relative p-4 bg-white border rounded-lg cursor-move transition-colors group ${
         isSelected 
           ? 'border-brand ring-1 ring-brand shadow-sm' 
           : 'border-transparent hover:border-dashed hover:border-gray-300 hover:bg-gray-50'

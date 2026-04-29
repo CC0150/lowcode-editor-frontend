@@ -15,7 +15,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-export const EditorCanvas: React.FC = () => {
+export const EditorCanvas: React.FC = React.memo(() => {
   const {
     components,
     selectedId,
@@ -23,6 +23,7 @@ export const EditorCanvas: React.FC = () => {
     reorderComponents,
     canvasTitle,
     updateTitle,
+    formGap,
   } = useEditorStore();
   /** 组件拖动传感器 */
   const sensors = useSensors(
@@ -73,6 +74,7 @@ export const EditorCanvas: React.FC = () => {
                 key={comp.id}
                 id={comp.id}
                 isSelected={selectedId === comp.id}
+                gap={formGap}
                 onClick={(e) => {
                   e.stopPropagation();
                   selectComponent(comp.id);
@@ -194,4 +196,5 @@ export const EditorCanvas: React.FC = () => {
       </div>
     </section>
   );
-};
+});
+EditorCanvas.displayName = 'EditorCanvas';

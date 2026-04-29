@@ -76,11 +76,12 @@ export interface EditorStore {
   components: ComponentSchema[];
   selectedId: string | null;
   canvasTitle: string;
+  formGap: number; // 表单项间距系数 (1-10, 默认 6, 对应 24px)
 
   addComponent: (type: FormItemType) => void;
   selectComponent: (id: string | null) => void;
   updateComponent: (id: string, updates: Partial<ComponentSchema>) => void;
-  updateProps: (id: string, props: any) => void;
+  updateProps: (id: string, props: Partial<ComponentSchema['props']>) => void;
   reorderComponents: (oldIndex: number, newIndex: number) => void;
   deleteComponent: (id: string) => void;
   clearCanvas: () => void;
@@ -90,4 +91,5 @@ export interface EditorStore {
   applyAIGenerated: (newComponents: ComponentSchema[], title?: string) => void;
   applyAIPatches: (patches: FormPatchAction[]) => void;
   updateTitle: (title: string) => void;
+  updateFormGap: (gap: number) => void;
 }

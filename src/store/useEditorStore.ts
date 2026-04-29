@@ -40,12 +40,14 @@ export const useEditorStore = create<EditorStore>()(
       return {
         components: [],
         canvasTitle: "自定义表单",
+        formGap: 24,
         selectedId: null,
         past: [],
         future: [],
 
         // 更新标题的方法
         updateTitle: (title: string) => set({ canvasTitle: title }),
+        updateFormGap: (gap: number) => set({ formGap: gap }),
 
         addComponent: (type: FormItemType) => {
           const isOptionsType =
@@ -226,7 +228,8 @@ export const useEditorStore = create<EditorStore>()(
       name: "editor-canvas-storage",
       partialize: (state) => ({
         components: state.components,
-        canvasTitle: state.canvasTitle, // 别忘了把标题也持久化到 localStorage
+        canvasTitle: state.canvasTitle,
+        formGap: state.formGap,
         past: state.past,
         future: state.future,
       }),

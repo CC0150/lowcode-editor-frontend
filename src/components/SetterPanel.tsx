@@ -1,5 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useEditorStore } from "../store/useEditorStore";
+import { AICopilot, AICopilotBar } from "./AICopilot";
+import { RegexEditor } from "./RegexEditor";
 import {
   Trash2,
   Settings2,
@@ -10,9 +12,6 @@ import {
   Star,
   ToggleLeft,
   Sliders,
-  Sparkles,
-  Wand2,
-  Loader2,
 } from "lucide-react";
 import { PanelSection } from "./PanelSection";
 import { OptionsEditor } from "./OptionsEditor";
@@ -30,19 +29,28 @@ export const SetterPanel = () => {
   } = useEditorStore();
   const selectedComponent = components.find((c) => c.id === selectedId);
 
-  // AI Copilot 状态
-  const [isCopilotOpen, setIsCopilotOpen] = useState(false);
-  const [copilotPrompt, setCopilotPrompt] = useState("");
-  const [isCopilotLoading, setIsCopilotLoading] = useState(false);
-  const copilotInputRef = useRef<HTMLInputElement>(null);
-
-  // AI Regex 状态
-  const [isRegexAIOpen, setIsRegexAIOpen] = useState(false);
-  const [regexPrompt, setRegexPrompt] = useState("");
-  const [isRegexLoading, setIsRegexLoading] = useState(false);
 
   // AI 选项生成状态
   const [isOptionsAILoading, setIsOptionsAILoading] = useState(false);
+
+  // AI Copilot 展开状态
+  const [isAICopilotOpen, setIsAICopilotOpen] = useState(false);
+
+  // Ctrl+I 唤醒 AI Copilot
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        e.key.toLowerCase() === "i" &&
+        selectedId
+      ) {
+        e.preventDefault();
+        setIsAICopilotOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedId]);
 
   // AI 选项生成处理函数
   const handleGenerateOptions = async (prompt: string) => {
@@ -66,77 +74,6 @@ export const SetterPanel = () => {
       // 错误统一已提示
     } finally {
       setIsOptionsAILoading(false);
-    }
-  };
-
-  // 快捷键监听：选中组件时，按 Ctrl+I 唤醒局部 AI
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (
-        (e.ctrlKey || e.metaKey) &&
-        e.key.toLowerCase() === "i" &&
-        selectedId
-      ) {
-        e.preventDefault();
-        setIsCopilotOpen(true);
-        setTimeout(() => copilotInputRef.current?.focus(), 50);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedId]);
-
-  // 局部修改请求逻辑
-  const handleModifyComponent = async () => {
-    if (!copilotPrompt.trim() || !selectedComponent) return;
-    setIsCopilotLoading(true);
-    try {
-      const result = await request.post("/modify-component", {
-        component: selectedComponent,
-        prompt: copilotPrompt,
-      });
-
-      if (result.success && result.data) {
-        updateComponent(selectedComponent.id, result.data);
-        message.success("AI 修改成功");
-        setCopilotPrompt("");
-        setIsCopilotOpen(false);
-      } else {
-        message.error("AI 修改失败");
-      }
-    } catch (e) {
-      // 错误统一已提示
-    } finally {
-      setIsCopilotLoading(false);
-    }
-  };
-
-  /**
-   * 触发正则生成
-   */
-  const handleGenerateRegex = async () => {
-    if (!regexPrompt.trim() || !selectedComponent) return;
-    setIsRegexLoading(true);
-    try {
-      const result = await request.post("/generate-regex", {
-        prompt: regexPrompt
-      });
-
-      if (result.success && result.data) {
-        updateComponent(selectedComponent.id, {
-          validation: {
-            regex: result.data.regex,
-            message: result.data.message,
-          },
-        });
-        message.success("正则配置已应用");
-        setRegexPrompt("");
-        setIsRegexAIOpen(false);
-      }
-    } catch (e) {
-      // 错误统一已提示
-    } finally {
-      setIsRegexLoading(false);
     }
   };
 
@@ -168,17 +105,10 @@ export const SetterPanel = () => {
           <h3 className="font-bold text-slate-800">属性面板</h3>
         </div>
         <div className="flex items-center gap-2">
-          {/* AI Copilot 唤醒按钮 */}
-          <button
-            onClick={() => {
-              setIsCopilotOpen(!isCopilotOpen);
-              setTimeout(() => copilotInputRef.current?.focus(), 50);
-            }}
-            className={`p-1.5 rounded-md transition-all shadow-sm border text-xs flex items-center gap-1 font-medium ${isCopilotOpen ? "bg-indigo-50 border-indigo-200 text-indigo-600" : "text-indigo-500 border-indigo-100 hover:bg-indigo-50 bg-white"}`}
-            title="局部 AI 助手 (Ctrl+I)"
-          >
-            <Sparkles className="w-4 h-4" /> AI 助手
-          </button>
+          <AICopilot
+            isOpen={isAICopilotOpen}
+            onToggle={() => setIsAICopilotOpen((v) => !v)}
+          />
           <span className="px-2 py-1 bg-indigo-50 text-indigo-600 text-[11px] font-mono font-bold rounded-md border border-indigo-200 ml-1">
             {selectedComponent.type}
           </span>
@@ -191,41 +121,12 @@ export const SetterPanel = () => {
         </div>
       </header>
 
-      {/* AI Copilot 浮层交互区 */}
-      {isCopilotOpen && (
-        <div className="shrink-0 p-4 bg-indigo-600/5 border-b border-indigo-100 shadow-inner animate-in slide-in-from-top-2">
-          <div className="flex items-center gap-2 mb-2">
-            <Sparkles className="w-4 h-4 text-indigo-600" />
-            <span className="text-xs font-bold text-indigo-900">
-              对该组件发指令...
-            </span>
-            <span className="ml-auto text-[10px] text-indigo-400 bg-white px-1.5 rounded border border-indigo-100 font-mono shadow-sm">
-              Ctrl+I
-            </span>
-          </div>
-          <div className="flex gap-2">
-            <input
-              ref={copilotInputRef}
-              type="text"
-              placeholder="例如：把选项改为四大名著..."
-              className="flex-1 px-3 py-1.5 text-sm rounded border border-indigo-200 focus:ring-2 focus:ring-indigo-500/30 outline-none"
-              value={copilotPrompt}
-              onChange={(e) => setCopilotPrompt(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleModifyComponent()}
-            />
-            <button
-              onClick={handleModifyComponent}
-              disabled={isCopilotLoading || !copilotPrompt.trim()}
-              className="px-3 py-1.5 bg-indigo-600 text-white text-sm rounded font-medium hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center min-w-[60px]"
-            >
-              {isCopilotLoading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                "修改"
-              )}
-            </button>
-          </div>
-        </div>
+      {isAICopilotOpen && (
+        <AICopilotBar
+          component={selectedComponent}
+          onUpdate={updateComponent}
+          onClose={() => setIsAICopilotOpen(false)}
+        />
       )}
 
       <div className="flex-1 overflow-y-auto custom-scrollbar pb-10">
@@ -429,48 +330,11 @@ export const SetterPanel = () => {
               icon={ShieldCheck}
               defaultOpen={true}
             >
-              <div className="mb-4 flex flex-col bg-indigo-50/40 border border-indigo-100/80 rounded-xl overflow-hidden transition-all">
-                <div
-                  className="flex items-center justify-between p-3 cursor-pointer hover:bg-indigo-50/60 transition-colors"
-                  onClick={() => setIsRegexAIOpen(!isRegexAIOpen)}
-                >
-                  <span className="text-xs font-bold text-indigo-900 flex items-center gap-1.5">
-                    <Wand2 className="w-3.5 h-3.5 text-indigo-500" /> AI
-                    智能正则助手
-                  </span>
-                  <span className="text-[10px] text-indigo-400 font-medium bg-white px-2 py-0.5 rounded-full border border-indigo-100 shadow-sm">
-                    {isRegexAIOpen ? "收起" : "试试看"}
-                  </span>
-                </div>
-
-                {isRegexAIOpen && (
-                  <div className="flex flex-col gap-2 px-3 pb-3 pt-1 border-t border-indigo-100/50 animate-in slide-in-from-top-1 fade-in duration-200">
-                    <input
-                      type="text"
-                      placeholder="例如：大陆手机号、邮箱、必须包含数字..."
-                      className={`${inputBaseStyle} !text-xs !py-1.5 focus:!border-indigo-300 focus:!ring-indigo-500/20`}
-                      value={regexPrompt}
-                      onChange={(e) => setRegexPrompt(e.target.value)}
-                      onKeyDown={(e) =>
-                        e.key === "Enter" && handleGenerateRegex()
-                      }
-                    />
-                    <button
-                      onClick={handleGenerateRegex}
-                      disabled={isRegexLoading || !regexPrompt.trim()}
-                      className="w-full bg-white border border-indigo-200 text-indigo-600 text-xs py-1.5 rounded-lg font-semibold hover:bg-indigo-50 hover:border-indigo-300 disabled:opacity-50 disabled:bg-slate-50 disabled:border-slate-200 disabled:text-slate-400 flex items-center justify-center gap-1.5 shadow-sm transition-all"
-                    >
-                      {isRegexLoading ? (
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      ) : (
-                        <>
-                          <Sparkles className="w-3 h-3" /> 生成并应用
-                        </>
-                      )}
-                    </button>
-                  </div>
-                )}
-              </div>
+              <RegexEditor
+                onApply={(validation) =>
+                  updateComponent(selectedComponent.id, { validation })
+                }
+              />
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-slate-600">

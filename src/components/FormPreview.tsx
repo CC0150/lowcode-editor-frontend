@@ -24,7 +24,7 @@ export const FormPreview: React.FC<Props> = ({
 }) => {
   const { formId: urlFormId } = useParams<{ formId: string }>();
 
-  const { components: storeComponents, canvasTitle } = useEditorStore();
+  const { components: storeComponents, canvasTitle, formGap } = useEditorStore();
   const components = overrideComponents || storeComponents;
   // 决定使用传入的标题还是本地编辑器的标题
   const displayTitle = overrideTitle || canvasTitle;
@@ -203,7 +203,7 @@ export const FormPreview: React.FC<Props> = ({
             </div>
           )}
 
-          <div className="flex flex-col gap-6 md:gap-7">
+          <div className="flex flex-col" style={{ gap: formGap + 'px' }}>
             {components
               .map((comp, originalIndex) => ({ comp, originalIndex }))
               .filter(({ comp }) => checkIsVisible(comp))
