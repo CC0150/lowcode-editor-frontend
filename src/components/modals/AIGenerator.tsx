@@ -39,14 +39,14 @@ export function AIGenerator() {
   const [previewData, setPreviewData] = useState<ComponentSchema[] | null>(null);
   const [previewTitle, setPreviewTitle] = useState<string>("");
 
+  // 独立标识当前是 "追加修改" 还是 "全新生成"，在点击生成按钮时确定，不受流式数据影响
+  const [patchMode, setPatchMode] = useState(false);
+
   // 获取 Store 中的方法，全量覆盖到画布
   const applyAIGenerated = useEditorStore((state) => state.applyAIGenerated);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-
-  // 根据当前预览数据是否存在，判断是否处于 "追加修改" 模式
-  const isPatchMode = previewData !== null && previewData.length > 0;
 
   /**
    * 关闭弹窗
@@ -54,6 +54,7 @@ export function AIGenerator() {
   const handleCloseModal = useCallback(() => {
     setIsOpen(false);
     setPrompt("");
+    setPatchMode(false);
     setPreviewData(null);
     setPreviewTitle(""); // 清空标题
     setLoading(false);
@@ -90,7 +91,11 @@ export function AIGenerator() {
     if (!prompt.trim() || loading) return;
     setLoading(true);
 
-    if (isPatchMode && previewData) {
+    // 在修改任何状态前确定本次是追加修改还是全新生成
+    const isPatch = previewData !== null && previewData.length > 0;
+    setPatchMode(isPatch);
+
+    if (isPatch && previewData) {
       // 1. 追加修改 (Patch) 模式 - 恢复流式接收机制
       abortControllerRef.current = new AbortController();
       let accumulatedText = "";
@@ -283,7 +288,7 @@ export function AIGenerator() {
             className="flex-1 bg-transparent text-xl text-slate-800 placeholder-slate-300 outline-none resize-none font-medium leading-relaxed"
             rows={prompt.length > 30 ? 3 : 1}
             placeholder={
-              isPatchMode
+              patchMode
                 ? "继续优化表单，例如：在姓名下面加一个邮箱字段..."
                 : "例如：创建一个面试登记表，包含姓名、手机号..."
             }
@@ -323,7 +328,7 @@ export function AIGenerator() {
                     <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur shadow-md px-3 py-1.5 rounded-full flex items-center gap-2 border border-indigo-50 animate-in fade-in zoom-in slide-in-from-bottom-2">
                       <div className="w-3 h-3 border-2 border-indigo-200 rounded-full animate-spin border-t-indigo-500"></div>
                       <span className="text-xs text-indigo-600 font-medium">
-                        {isPatchMode ? "AI 正在修改..." : "AI 正在书写..."}
+                        {patchMode ? "AI 正在修改..." : "AI 正在书写..."}
                       </span>
                     </div>
                   )}
