@@ -1,7 +1,6 @@
 import React from "react";
 import { useEditorStore } from "../../store/useEditorStore";
 import { SortableWrapper } from "./SortableWrapper";
-import { canvasRenderers } from "./CanvasRenderer";
 import {
   DndContext,
   closestCenter,
@@ -15,29 +14,44 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
+/** 画布标题 — 单独订阅 store，避免因组件变更而重渲染 */
+const CanvasTitle = React.memo(() => {
+  const canvasTitle = useEditorStore((s) => s.canvasTitle);
+  const updateTitle = useEditorStore((s) => s.updateTitle);
+
+  return (
+    <div className="border-b-2 border-gray-100 pb-4 mb-8">
+      <input
+        value={canvasTitle}
+        onChange={(e) => updateTitle(e.target.value)}
+        className="text-2xl font-bold text-center text-gray-800 w-full border-none focus:ring-0 bg-transparent hover:bg-gray-50 rounded transition-colors"
+        placeholder="请输入表单标题"
+      />
+      <p className="text-gray-500 text-sm text-center mt-2">
+        请如实填写以下信息
+      </p>
+    </div>
+  );
+});
+CanvasTitle.displayName = "CanvasTitle";
+
 export const EditorCanvas: React.FC = React.memo(() => {
-  const {
-    components,
-    selectedId,
-    selectComponent,
-    reorderComponents,
-    canvasTitle,
-    updateTitle,
-    formGap,
-  } = useEditorStore();
-  /** 组件拖动传感器 */
+  const components = useEditorStore((s) => s.components);
+  const selectComponent = useEditorStore((s) => s.selectComponent);
+
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
   );
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = React.useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      const oldIndex = components.findIndex((c) => c.id === active.id);
-      const newIndex = components.findIndex((c) => c.id === over.id);
-      reorderComponents(oldIndex, newIndex);
+      const state = useEditorStore.getState();
+      const oldIndex = state.components.findIndex((c) => c.id === active.id);
+      const newIndex = state.components.findIndex((c) => c.id === over.id);
+      state.reorderComponents(oldIndex, newIndex);
     }
-  };
+  }, []);
 
   return (
     <section
@@ -48,17 +62,7 @@ export const EditorCanvas: React.FC = React.memo(() => {
         className="w-full max-w-2xl bg-white shadow-xl rounded-xl min-h-[560px] p-10 ring-1 ring-gray-200/50"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="border-b-2 border-gray-100 pb-4 mb-8">
-          <input
-            value={canvasTitle}
-            onChange={(e) => updateTitle(e.target.value)}
-            className="text-2xl font-bold text-center text-gray-800 w-full border-none focus:ring-0 bg-transparent hover:bg-gray-50 rounded transition-colors"
-            placeholder="请输入表单标题"
-          />
-          <p className="text-gray-500 text-sm text-center mt-2">
-            请如实填写以下信息
-          </p>
-        </div>
+        <CanvasTitle />
 
         <DndContext
           sensors={sensors}
@@ -73,22 +77,8 @@ export const EditorCanvas: React.FC = React.memo(() => {
               <SortableWrapper
                 key={comp.id}
                 id={comp.id}
-                isSelected={selectedId === comp.id}
-                gap={formGap}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  selectComponent(comp.id);
-                }}
-              >
-                <div className="flex flex-col gap-2 pointer-events-none">
-                  <label className="text-sm font-medium text-gray-700 flex items-center gap-1">
-                    {index + 1}. {comp.label}{" "}
-                    {comp.required && <span className="text-red-500">*</span>}
-                  </label>
-
-                  {canvasRenderers[comp.type](comp)}
-                </div>
-              </SortableWrapper>
+                index={index}
+              />
             ))}
           </SortableContext>
         </DndContext>
@@ -102,4 +92,4 @@ export const EditorCanvas: React.FC = React.memo(() => {
     </section>
   );
 });
-EditorCanvas.displayName = 'EditorCanvas';
+EditorCanvas.displayName = "EditorCanvas";

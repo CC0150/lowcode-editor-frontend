@@ -89,7 +89,7 @@ import { ${antComponents.join(", ")} } from 'antd';
 ${hasDate ? "import dayjs from 'dayjs';" : ""}
 
 /**
- * AI 生成的表单组件 - ${canvasTitle}
+ * 表单组件 - ${canvasTitle}
  */
 const App: React.FC = () => {
   const [form] = Form.useForm();
