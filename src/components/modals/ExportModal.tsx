@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useEditorStore } from "../store/useEditorStore";
+import { useEditorStore } from "../../store/useEditorStore";
 import { X, Copy, CheckCircle2, Code2, FileJson } from "lucide-react";
 
 interface Props {

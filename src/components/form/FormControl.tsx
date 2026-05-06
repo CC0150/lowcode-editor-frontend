@@ -1,6 +1,6 @@
 import React, { useId, useState, useRef } from "react";
 import { UploadCloud, FileText, X } from "lucide-react";
-import { type ComponentSchema } from "../types/editor";
+import { type ComponentSchema } from "../../types/editor";
 import {
   Input,
   Select,

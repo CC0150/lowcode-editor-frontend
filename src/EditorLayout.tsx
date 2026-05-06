@@ -10,15 +10,15 @@ import {
     SlidersHorizontal,
     Globe
 } from "lucide-react";
-import { ExportModal } from "./components/ExportModal";
-import { FormPreview } from "./components/FormPreview";
-import { AIGenerator } from "./components/AIGenerator";
-import { LeftSidebar } from "./components/LeftSidebar";
-import { EditorCanvas } from "./components/EditorCanvas";
-import { RightSidebar } from "./components/RightSidebar";
+import { ExportModal } from "./components/modals/ExportModal";
+import { FormPreview } from "./components/form/FormPreview";
+import { AIGenerator } from "./components/modals/AIGenerator";
+import { LeftSidebar } from "./components/editor/LeftSidebar";
+import { EditorCanvas } from "./components/editor/EditorCanvas";
+import { RightSidebar } from "./components/editor/RightSidebar";
 import { useUIStore } from "./store/useUIStore";
-import { Logo } from "./components/Logo";
-import { PublishModal } from "./components/PublishModal";
+import { Logo } from "./components/common/Logo";
+import { PublishModal } from "./components/modals/PublishModal";
 import { Popover } from "antd";
 
 export function EditorLayout() {

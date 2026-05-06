@@ -1,8 +1,8 @@
 import { useState, useRef } from "react";
 import { message } from "antd";
-import { request } from "../utils/request";
+import { request } from "../../utils/request";
 import { Sparkles, Loader2, CornerDownLeft } from "lucide-react";
-import type { ComponentSchema } from "../types/editor";
+import type { ComponentSchema } from "../../types/editor";
 
 /**
  * 局部 AI 助手 —— 对单个组件发指令修改属性

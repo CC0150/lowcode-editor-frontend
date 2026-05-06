@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useEditorStore } from "../store/useEditorStore";
+import { useEditorStore } from "../../store/useEditorStore";
 import { AICopilotBar } from "./AICopilot";
 import { PanelSection } from "./PanelSection";
 import { SetterHeader } from "./SetterHeader";

@@ -1,5 +1,5 @@
 import React from "react";
-import { useEditorStore } from "../store/useEditorStore";
+import { useEditorStore } from "../../store/useEditorStore";
 import { SortableWrapper } from "./SortableWrapper";
 import { canvasRenderers } from "./CanvasRenderer";
 import {

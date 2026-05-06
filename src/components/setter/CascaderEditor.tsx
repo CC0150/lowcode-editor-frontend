@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Network, Sparkles, Loader2, CheckCircle2, AlertCircle, Code, LayoutList, Plus, Trash2, PlusCircle } from 'lucide-react';
-import { type OptionItem } from '../types/editor';
+import { type OptionItem } from '../../types/editor';
 
 interface CascaderEditorProps {
     options: OptionItem[];

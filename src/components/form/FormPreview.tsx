@@ -1,10 +1,10 @@
 import React, { useState, useRef } from "react";
-import { useEditorStore } from "../store/useEditorStore";
+import { useEditorStore } from "../../store/useEditorStore";
 import { ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
-import { type ComponentSchema } from "../types/editor";
+import { type ComponentSchema } from "../../types/editor";
 import { FormControl } from "./FormControl";
 import { ErrorBoundary } from "react-error-boundary";
-import { request } from "../utils/request";
+import { request } from "../../utils/request";
 import { useParams } from "react-router-dom";
 
 interface Props {

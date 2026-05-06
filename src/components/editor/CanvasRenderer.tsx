@@ -1,4 +1,4 @@
-import { type ComponentSchema, type FormItemType } from "../types/editor";
+import { type ComponentSchema, type FormItemType } from "../../types/editor";
 import type { ReactNode } from "react";
 import { UploadCloud, Star, ListTree } from "lucide-react";
 

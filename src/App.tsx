@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { EditorLayout } from "./EditorLayout";
-import { SharePage } from "./components/SharePage";
+import { SharePage } from "./components/form/SharePage";
 
 export default function App() {
   return (

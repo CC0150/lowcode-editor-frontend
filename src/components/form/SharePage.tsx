@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FormPreview } from "./FormPreview";
 import { Loader2, AlertCircle } from "lucide-react";
-import { type ComponentSchema } from "../types/editor";
-import { request } from "../utils/request";
+import { type ComponentSchema } from "../../types/editor";
+import { request } from "../../utils/request";
 
 export const SharePage: React.FC = () => {
     const { formId } = useParams<{ formId: string }>();

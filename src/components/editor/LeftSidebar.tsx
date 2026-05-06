@@ -1,5 +1,5 @@
 import React from "react";
-import { useEditorStore } from "../store/useEditorStore";
+import { useEditorStore } from "../../store/useEditorStore";
 import {
   Type,
   AlignLeft,
@@ -15,7 +15,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { Popconfirm } from "antd";
-import { useUIStore } from "../store/useUIStore";
+import { useUIStore } from "../../store/useUIStore";
 
 // 内部封装：左侧物料区专用的折叠面板
 const MaterialSection = ({

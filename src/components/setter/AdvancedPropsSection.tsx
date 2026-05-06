@@ -4,8 +4,8 @@ import { OptionsEditor } from "./OptionsEditor";
 import { CascaderEditor } from "./CascaderEditor";
 import { Upload, Star, ToggleLeft, Sliders } from "lucide-react";
 import { message } from "antd";
-import { request } from "../utils/request";
-import type { ComponentSchema } from "../types/editor";
+import { request } from "../../utils/request";
+import type { ComponentSchema } from "../../types/editor";
 
 const inputBaseStyle =
   "w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 transition-all placeholder:text-slate-400 hover:border-slate-300 focus:bg-white focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none shadow-sm";
@@ -19,7 +19,6 @@ interface Props {
 export const AdvancedPropsSection: React.FC<Props> = ({
   component,
   onUpdateProps,
-  onUpdateComponent,
 }) => {
   const [isOptionsAILoading, setIsOptionsAILoading] = useState(false);
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { SetterPanel } from "./SetterPanel";
+import { SetterPanel } from "../setter/SetterPanel";
 
 interface RightSidebarProps {
     isOpen: boolean;

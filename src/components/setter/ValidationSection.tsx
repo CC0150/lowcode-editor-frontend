@@ -1,7 +1,7 @@
 import { PanelSection } from "./PanelSection";
 import { RegexEditor } from "./RegexEditor";
 import { ShieldCheck } from "lucide-react";
-import type { ComponentSchema } from "../types/editor";
+import type { ComponentSchema } from "../../types/editor";
 
 interface Props {
   componentId: string;

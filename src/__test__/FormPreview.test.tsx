@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { FormPreview } from "../components/FormPreview";
+import { FormPreview } from "../components/form/FormPreview";
 import { useEditorStore } from "../store/useEditorStore";
 import type { ComponentSchema } from "../types/editor";
 

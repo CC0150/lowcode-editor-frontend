@@ -1,6 +1,6 @@
 import React from "react";
 import { ChevronDown } from "lucide-react";
-import { useUIStore } from "../store/useUIStore";
+import { useUIStore } from "../../store/useUIStore";
 
 interface PanelSectionProps {
   id: string;

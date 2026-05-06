@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { message } from "antd";
-import { request } from "../utils/request";
+import { request } from "../../utils/request";
 import { Wand2, Sparkles, Loader2 } from "lucide-react";
-import type { ValidationRule } from "../types/editor";
+import type { ValidationRule } from "../../types/editor";
 
 interface RegexEditorProps {
   onApply: (validation: ValidationRule) => void;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Trash2, List, Sparkles, Loader2 } from 'lucide-react';
-import { type OptionItem } from '../types/editor';
+import { type OptionItem } from '../../types/editor';
 
 interface OptionsEditorProps {
     options: OptionItem[];

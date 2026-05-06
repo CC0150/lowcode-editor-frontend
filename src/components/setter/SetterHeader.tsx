@@ -1,6 +1,6 @@
 import { AICopilot } from "./AICopilot";
 import { Trash2 } from "lucide-react";
-import type { ComponentSchema } from "../types/editor";
+import type { ComponentSchema } from "../../types/editor";
 
 interface Props {
   component: ComponentSchema;

@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { useEditorStore } from "../store/useEditorStore";
-import { type ComponentSchema } from "../types/editor";
-import { FormPreview } from "./FormPreview";
+import { useEditorStore } from "../../store/useEditorStore";
+import { type ComponentSchema } from "../../types/editor";
+import { FormPreview } from "../form/FormPreview";
 import { Sparkles, Command, CornerDownLeft, X } from "lucide-react";
 import { message } from "antd";
 import { jsonrepair } from "jsonrepair";
-import { validateAndCleanComponents } from "../utils/validation";
+import { validateAndCleanComponents } from "../../utils/validation";
 import { produce } from "immer";
-import { request } from "../utils/request";
+import { request } from "../../utils/request";
 
 /**
  * 解析 JSON 字符串，尝试修复并返回组件数组和标题
