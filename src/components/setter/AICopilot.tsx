@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { message } from "antd";
+import message from "antd/es/message";
 import { request } from "../../utils/request";
 import { Sparkles, Loader2, CornerDownLeft } from "lucide-react";
 import type { ComponentSchema } from "../../types/editor";

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, lazy, Suspense } from "react";
 import { useEditorStore } from "./store/useEditorStore";
 import {
     PanelLeftClose,
@@ -10,16 +10,23 @@ import {
     SlidersHorizontal,
     Globe
 } from "lucide-react";
-import { ExportModal } from "./components/modals/ExportModal";
-import { FormPreview } from "./components/form/FormPreview";
-import { AIGenerator } from "./components/modals/AIGenerator";
 import { LeftSidebar } from "./components/editor/LeftSidebar";
 import { EditorCanvas } from "./components/editor/EditorCanvas";
 import { RightSidebar } from "./components/editor/RightSidebar";
 import { useUIStore } from "./store/useUIStore";
 import { Logo } from "./components/common/Logo";
-import { PublishModal } from "./components/modals/PublishModal";
-import { Popover } from "antd";
+import Popover from "antd/es/popover";
+import { AIGenerator } from "./components/modals/AIGenerator";
+
+const ExportModal = lazy(() =>
+    import("./components/modals/ExportModal").then((m) => ({ default: m.ExportModal }))
+);
+const PublishModal = lazy(() =>
+    import("./components/modals/PublishModal").then((m) => ({ default: m.PublishModal }))
+);
+const FormPreview = lazy(() =>
+    import("./components/form/FormPreview").then((m) => ({ default: m.FormPreview }))
+);
 
 export function EditorLayout() {
     const { past, future, undo, redo, formGap, updateFormGap } = useEditorStore();
@@ -219,10 +226,12 @@ export function EditorLayout() {
 
             {/*  主体区域  */}
             <main className="flex-1 flex overflow-hidden relative">
-                {/* 全局模态框 */}
-                {isPreview && <FormPreview onBack={() => setIsPreview(false)} />}
-                {isExporting && <ExportModal onClose={() => setIsExporting(false)} />}
-                {isPublishing && <PublishModal onClose={() => setIsPublishing(false)} />}
+                {/* 全局模态框（懒加载） */}
+                <Suspense fallback={null}>
+                    {isPreview && <FormPreview onBack={() => setIsPreview(false)} />}
+                    {isExporting && <ExportModal onClose={() => setIsExporting(false)} />}
+                    {isPublishing && <PublishModal onClose={() => setIsPublishing(false)} />}
+                </Suspense>
 
                 <LeftSidebar isOpen={leftOpen} />
                 <EditorCanvas />

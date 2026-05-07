@@ -1,6 +1,6 @@
 import { PanelSection } from "./PanelSection";
 import { GitBranch } from "lucide-react";
-import { Select } from "antd";
+import Select from "antd/es/select";
 import type { ComponentSchema } from "../../types/editor";
 
 interface Props {

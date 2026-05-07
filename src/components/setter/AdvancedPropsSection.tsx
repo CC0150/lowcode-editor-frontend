@@ -3,7 +3,7 @@ import { PanelSection } from "./PanelSection";
 import { OptionsEditor } from "./OptionsEditor";
 import { CascaderEditor } from "./CascaderEditor";
 import { Upload, Star, ToggleLeft, Sliders } from "lucide-react";
-import { message } from "antd";
+import message from "antd/es/message";
 import { request } from "../../utils/request";
 import type { ComponentSchema } from "../../types/editor";
 

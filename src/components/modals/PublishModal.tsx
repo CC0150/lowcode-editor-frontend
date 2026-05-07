@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useEditorStore } from "../../store/useEditorStore";
 import { X, Globe, Link as LinkIcon, Loader2, QrCode } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import { message } from "antd";
+import message from "antd/es/message";
 import { request } from "../../utils/request";
 
 

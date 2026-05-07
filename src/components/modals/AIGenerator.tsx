@@ -4,7 +4,7 @@ import { useEditorStore } from "../../store/useEditorStore";
 import { type ComponentSchema } from "../../types/editor";
 import { FormPreview } from "../form/FormPreview";
 import { Sparkles, Command, CornerDownLeft, X } from "lucide-react";
-import { message } from "antd";
+import message from "antd/es/message";
 import { jsonrepair } from "jsonrepair";
 import { validateAndCleanComponents } from "../../utils/validation";
 import { produce } from "immer";

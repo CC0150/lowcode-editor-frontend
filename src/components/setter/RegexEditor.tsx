@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { message } from "antd";
+import message from "antd/es/message";
 import { request } from "../../utils/request";
 import { Wand2, Sparkles, Loader2 } from "lucide-react";
 import type { ValidationRule } from "../../types/editor";

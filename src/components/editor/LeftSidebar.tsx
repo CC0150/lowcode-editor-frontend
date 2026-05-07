@@ -14,7 +14,7 @@ import {
   ChevronDown,
   Trash2,
 } from "lucide-react";
-import { Popconfirm } from "antd";
+import Popconfirm from "antd/es/popconfirm";
 import { useUIStore } from "../../store/useUIStore";
 
 // 内部封装：左侧物料区专用的折叠面板
