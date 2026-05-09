@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { useEditorStore } from "../../store/useEditorStore";
 import { ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
 import { type ComponentSchema } from "../../types/editor";
@@ -34,6 +34,16 @@ export const FormPreview: React.FC<Props> = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const fieldRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  const handleFormScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const { scrollTop, scrollHeight, clientHeight } = el;
+    const maxScroll = scrollHeight - clientHeight;
+    setScrollProgress(maxScroll > 0 ? Math.min(scrollTop / maxScroll, 1) : 0);
+  }, []);
 
   const handleInputChange = (id: string, value: any) => {
     setFormData((prev) => ({ ...prev, [id]: value }));
@@ -153,6 +163,8 @@ export const FormPreview: React.FC<Props> = ({
 
   return (
     <div
+      ref={!isEmbedded ? scrollRef : undefined}
+      onScroll={!isEmbedded ? handleFormScroll : undefined}
       className={
         isEmbedded
           ? "w-full h-full relative"
@@ -168,6 +180,19 @@ export const FormPreview: React.FC<Props> = ({
             <ArrowLeft className="w-4 h-4" /> 退出预览
           </button>
         </header>
+      )}
+
+      {/* 滚动进度条 — 仅在非嵌入模式下显示 */}
+      {!isEmbedded && (
+        <div
+          className="fixed left-0 right-0 z-30 h-1 bg-gray-100 pointer-events-none"
+          style={{ top: hideHeader ? 0 : 56 }}
+        >
+          <div
+            className="h-full bg-gradient-to-r from-indigo-400 to-indigo-600 transition-all duration-150 ease-out"
+            style={{ width: `${scrollProgress * 100}%` }}
+          />
+        </div>
       )}
 
       <div
