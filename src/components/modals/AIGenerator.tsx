@@ -257,6 +257,17 @@ export function AIGenerator() {
   };
 
   /**
+   * 中断 AI 生成
+   */
+  const handleStop = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setLoading(false);
+  }, []);
+
+  /**
    * 确认 AI 生成的组件，覆盖到画布并更新标题
    */
   const handleConfirm = () => {
@@ -330,6 +341,13 @@ export function AIGenerator() {
                       <span className="text-xs text-indigo-600 font-medium">
                         {patchMode ? "AI 正在修改..." : "AI 正在书写..."}
                       </span>
+                      <button
+                        onClick={handleStop}
+                        className="ml-1 p-0.5 rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                        title="停止生成"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   )}
                 </div>
@@ -340,6 +358,13 @@ export function AIGenerator() {
                     <Sparkles className="w-5 h-5 text-indigo-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
                   </div>
                   <p className="text-sm font-medium animate-pulse">正在理解您的需求...</p>
+                  <button
+                    onClick={handleStop}
+                    className="flex items-center gap-1.5 px-4 py-2 text-sm text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg border border-slate-200 hover:border-red-200 transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                    停止生成
+                  </button>
                 </div>
               ) : null}
             </div>
