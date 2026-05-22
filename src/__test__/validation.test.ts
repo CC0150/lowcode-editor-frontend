@@ -37,7 +37,7 @@ describe("validateAndCleanComponents", () => {
 
   it("所有合法 type 都能通过", () => {
     const types = [
-      "input", "textarea", "radio", "select",
+      "input", "number", "textarea", "radio", "select",
       "date", "checkbox", "upload", "rate", "switch", "cascader",
     ];
     const result = validateAndCleanComponents(

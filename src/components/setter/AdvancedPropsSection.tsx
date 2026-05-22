@@ -46,7 +46,7 @@ export const AdvancedPropsSection: React.FC<Props> = ({
 
   return (
     <PanelSection id="advanced-props" title="控件高级属性" icon={Sliders}>
-      {(component.type === "input" || component.type === "textarea") && (
+      {(component.type === "input" || component.type === "number" || component.type === "textarea") && (
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-semibold text-slate-600">
             占位文字 (Placeholder)
@@ -59,6 +59,59 @@ export const AdvancedPropsSection: React.FC<Props> = ({
               onUpdateProps(component.id, { placeholder: e.target.value })
             }
           />
+        </div>
+      )}
+
+      {component.type === "number" && (
+        <div className="flex flex-col gap-3 p-3 bg-blue-50/50 rounded-lg border border-blue-100 mt-3">
+          <label className="text-xs font-bold text-blue-900">
+            数值范围限制
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] text-slate-500">最小值 (Min)</span>
+              <input
+                type="number"
+                className={inputBaseStyle}
+                value={component.props.min ?? ""}
+                placeholder="0"
+                onChange={(e) =>
+                  onUpdateProps(component.id, {
+                    min: e.target.value === "" ? undefined : Number(e.target.value),
+                  })
+                }
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] text-slate-500">最大值 (Max)</span>
+              <input
+                type="number"
+                className={inputBaseStyle}
+                value={component.props.max ?? ""}
+                placeholder="无限制"
+                onChange={(e) =>
+                  onUpdateProps(component.id, {
+                    max: e.target.value === "" ? undefined : Number(e.target.value),
+                  })
+                }
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] text-slate-500">步进值 (Step)</span>
+            <input
+              type="number"
+              min={0}
+              className={inputBaseStyle}
+              value={component.props.step ?? ""}
+              placeholder="1"
+              onChange={(e) =>
+                onUpdateProps(component.id, {
+                  step: e.target.value === "" ? undefined : Number(e.target.value),
+                })
+              }
+            />
+          </div>
         </div>
       )}
 

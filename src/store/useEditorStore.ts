@@ -54,6 +54,7 @@ export const useEditorStore = create<EditorStore>()(
             type === "radio" || type === "select" || type === "checkbox";
           const labelMap: Record<FormItemType, string> = {
             input: "单行文本",
+            number: "数字输入",
             textarea: "多行文本",
             radio: "单项选择",
             checkbox: "多项选择",
@@ -68,7 +69,11 @@ export const useEditorStore = create<EditorStore>()(
           const defaultProps: any = {};
           if (type === "input" || type === "textarea" || type === "date")
             defaultProps.placeholder = "请输入";
-          else if (isOptionsType) {
+          else if (type === "number") {
+            defaultProps.placeholder = "请输入数字";
+            defaultProps.min = 0;
+            defaultProps.step = 1;
+          } else if (isOptionsType) {
             defaultProps.options = [
               { label: "选项 1", value: "1" },
               { label: "选项 2", value: "2" },

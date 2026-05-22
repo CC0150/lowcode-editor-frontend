@@ -13,6 +13,18 @@ const inputRenderer: CanvasRenderer = (comp) => (
   />
 );
 
+const numberRenderer: CanvasRenderer = (comp) => (
+  <input
+    type="number"
+    placeholder={comp.props.placeholder}
+    min={comp.props.min}
+    max={comp.props.max}
+    step={comp.props.step}
+    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-gray-50"
+    readOnly
+  />
+);
+
 const textareaRenderer: CanvasRenderer = (comp) => (
   <textarea
     placeholder={comp.props.placeholder}
@@ -100,6 +112,7 @@ const cascaderRenderer: CanvasRenderer = () => (
 
 export const canvasRenderers: Record<FormItemType, CanvasRenderer> = {
   input: inputRenderer,
+  number: numberRenderer,
   textarea: textareaRenderer,
   date: dateRenderer,
   select: selectRenderer,

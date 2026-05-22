@@ -24,10 +24,13 @@ export const ExportModal: React.FC<Props> = ({ onClose }) => {
         "Form",
         "Button", // 确保引入 Button
         "Input",
+        "InputNumber",
         "message",
         ...(components
           .map((c) => {
             switch (c.type) {
+              case "number":
+                return "InputNumber";
               case "select":
                 return "Select";
               case "radio":
@@ -59,6 +62,12 @@ export const ExportModal: React.FC<Props> = ({ onClose }) => {
         switch (comp.type) {
           case "input":
             return `<Form.Item ${commonProps}>\n            <Input placeholder="${comp.props.placeholder || "请输入"}" />\n          </Form.Item>`;
+          case "number": {
+            const minProp = comp.props.min !== undefined ? ` min={${comp.props.min}}` : "";
+            const maxProp = comp.props.max !== undefined ? ` max={${comp.props.max}}` : "";
+            const stepProp = comp.props.step !== undefined ? ` step={${comp.props.step}}` : "";
+            return `<Form.Item ${commonProps}>\n            <InputNumber placeholder="${comp.props.placeholder || "请输入数字"}" style={{ width: '100%' }}${minProp}${maxProp}${stepProp} />\n          </Form.Item>`;
+          }
           case "textarea":
             return `<Form.Item ${commonProps}>\n            <Input.TextArea placeholder="${comp.props.placeholder || "请输入"}" rows={4} />\n          </Form.Item>`;
           case "select":

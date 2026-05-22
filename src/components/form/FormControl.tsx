@@ -3,6 +3,7 @@ import { UploadCloud, FileText, X } from "lucide-react";
 import { type ComponentSchema } from "../../types/editor";
 import {
   Input,
+  InputNumber,
   Select,
   Radio,
   Checkbox,
@@ -64,6 +65,22 @@ export const FormControl: React.FC<FormControlProps> = ({
           placeholder={safeProps.placeholder}
           value={safeTextValue}
           onChange={(e) => onChange(e.target.value)}
+        />
+      );
+
+    case "number":
+      return (
+        <InputNumber
+          id={uniqueId}
+          status={antStatus}
+          className="w-full"
+          style={{ width: "100%" }}
+          placeholder={safeProps.placeholder}
+          min={safeProps.min}
+          max={safeProps.max}
+          step={safeProps.step}
+          value={value != null ? Number(value) : null}
+          onChange={(val) => onChange(val)}
         />
       );
 

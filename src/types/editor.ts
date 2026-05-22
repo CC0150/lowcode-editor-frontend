@@ -2,6 +2,7 @@ import { type Patch } from "immer";
 
 export type FormItemType =
   | "input"
+  | "number"
   | "textarea"
   | "radio"
   | "select"
@@ -55,6 +56,9 @@ export interface ComponentSchema {
     options?: OptionItem[]; // 给 radio, select, checkbox, cascader 用的选项
     direction?: "horizontal" | "vertical"; // 单选框和复选框的排列方向
 
+    min?: number; // 数字输入的最小值
+    max?: number; // 数字输入的最大值
+    step?: number; // 数字输入的步进值
     maxRate?: number; // 评分组件的最大星数 (默认5)
     accept?: string; // 上传组件的文件类型限制 (如 image/*)
     activeText?: string; // 开关打开时的文字

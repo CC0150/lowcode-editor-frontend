@@ -2,6 +2,7 @@ import React from "react";
 import { useEditorStore } from "../../store/useEditorStore";
 import {
   Type,
+  Hash,
   AlignLeft,
   CheckCircle2,
   CheckSquare,
@@ -81,6 +82,7 @@ export const LeftSidebar: React.FC<LeftSidebarProps> = ({ isOpen }) => {
             <div className="grid grid-cols-2 gap-3">
               {[
                 { type: "input", icon: Type, label: "单行文本" },
+                { type: "number", icon: Hash, label: "数字输入" },
                 { type: "textarea", icon: AlignLeft, label: "多行文本" },
                 { type: "radio", icon: CheckCircle2, label: "单项选择" },
                 { type: "checkbox", icon: CheckSquare, label: "多项选择" },

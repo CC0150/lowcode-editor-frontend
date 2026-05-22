@@ -24,7 +24,11 @@ export const FormPreview: React.FC<Props> = ({
 }) => {
   const { formId: urlFormId } = useParams<{ formId: string }>();
 
-  const { components: storeComponents, canvasTitle, formGap } = useEditorStore();
+  const {
+    components: storeComponents,
+    canvasTitle,
+    formGap,
+  } = useEditorStore();
   const components = overrideComponents || storeComponents;
   // 决定使用传入的标题还是本地编辑器的标题
   const displayTitle = overrideTitle || canvasTitle;
@@ -78,11 +82,7 @@ export const FormPreview: React.FC<Props> = ({
         val === "" ||
         (Array.isArray(val) && val.length === 0);
 
-      if (
-        comp.required &&
-        comp.type !== "switch" &&
-        isEmpty
-      ) {
+      if (comp.required && comp.type !== "switch" && isEmpty) {
         newErrors[safeId] = "此项为必填项";
         if (!firstErrorId) firstErrorId = safeId;
       } else if (
@@ -95,7 +95,19 @@ export const FormPreview: React.FC<Props> = ({
             newErrors[safeId] = comp.validation.message || "格式不正确";
             if (!firstErrorId) firstErrorId = safeId;
           }
-        } catch (err) { }
+        } catch (err) {}
+      }
+
+      // 数字输入范围校验
+      if (!isEmpty && comp.type === "number" && typeof val === "number") {
+        const { min, max } = comp.props || {};
+        if (min !== undefined && val < min) {
+          newErrors[safeId] = `最小值为 ${min}`;
+          if (!firstErrorId) firstErrorId = safeId;
+        } else if (max !== undefined && val > max) {
+          newErrors[safeId] = `最大值为 ${max}`;
+          if (!firstErrorId) firstErrorId = safeId;
+        }
       }
     });
 
@@ -112,10 +124,10 @@ export const FormPreview: React.FC<Props> = ({
       if (hideHeader && urlFormId) {
         await request.post("/forms/submit", {
           formId: urlFormId,
-          content: formData
+          content: formData,
         });
       }
-      
+
       console.log("=== 提交的表单数据 ===", formData);
       setIsSubmitted(true);
     } catch (err) {
@@ -138,7 +150,9 @@ export const FormPreview: React.FC<Props> = ({
           <p className="text-gray-500 text-sm mt-2">
             {isEmbedded
               ? "校验通过，逻辑运行正常！"
-              : (hideHeader ? "感谢您的参与，数据已成功提交。" : "控制台已打印收集到的受控数据。")}
+              : hideHeader
+                ? "感谢您的参与，数据已成功提交。"
+                : "控制台已打印收集到的受控数据。"}
           </p>
 
           <button
@@ -154,7 +168,11 @@ export const FormPreview: React.FC<Props> = ({
             }}
             className="mt-8 px-8 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-600/90 transition-colors shadow-sm w-full"
           >
-            {isEmbedded ? "返回重新试填" : (hideHeader ? "再填一份" : "返回编辑器")}
+            {isEmbedded
+              ? "返回重新试填"
+              : hideHeader
+                ? "再填一份"
+                : "返回编辑器"}
           </button>
         </div>
       </div>
@@ -189,7 +207,7 @@ export const FormPreview: React.FC<Props> = ({
           style={{ top: hideHeader ? 0 : 56 }}
         >
           <div
-            className="h-full bg-gradient-to-r from-indigo-400 to-indigo-600 transition-all duration-150 ease-out"
+            className="h-full bg-linear-to-r from-indigo-400 to-indigo-600 transition-all duration-150 ease-out"
             style={{ width: `${scrollProgress * 100}%` }}
           />
         </div>
@@ -228,12 +246,11 @@ export const FormPreview: React.FC<Props> = ({
             </div>
           )}
 
-          <div className="flex flex-col" style={{ gap: formGap + 'px' }}>
+          <div className="flex flex-col" style={{ gap: formGap + "px" }}>
             {components
               .map((comp, originalIndex) => ({ comp, originalIndex }))
               .filter(({ comp }) => checkIsVisible(comp))
               .map(({ comp, originalIndex }, visibleIndex) => {
-
                 const safeKey = comp.id || `streaming-comp-${originalIndex}`;
                 const hasError = !!errors[safeKey];
 
