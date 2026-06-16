@@ -10,12 +10,18 @@ import { v4 as uuidv4 } from "uuid";
 // 开启 Immer 的 JSON Patch 补丁功能
 enablePatches();
 
+const VALID_TYPES: Set<string> = new Set([
+  "input", "number", "textarea", "radio", "select",
+  "date", "checkbox", "upload", "rate", "switch", "cascader",
+]);
+
 export const useEditorStore = create<EditorStore>()(
   persist(
     (set, get) => {
       // 核心拦截器：通过 immer 生成最小差异补丁，替代全量快照
       const applyChange = (recipe: (draft: ComponentSchema[]) => void) => {
         const currentComponents = get().components;
+        const currentTitle = get().canvasTitle;
 
         // produceWithPatches 返回：[新状态, 正向补丁(用于重做), 反向补丁(用于撤销)]
         const [nextState, forwardPatches, inversePatches] = produceWithPatches(
@@ -30,7 +36,7 @@ export const useEditorStore = create<EditorStore>()(
           components: nextState,
           past: [
             ...state.past,
-            { forward: forwardPatches, inverse: inversePatches },
+            { forward: forwardPatches, inverse: inversePatches, canvasTitle: currentTitle },
           ], // 仅保存差异
           future: [], // 发生新操作，清空重做栈
         }));
@@ -160,8 +166,9 @@ export const useEditorStore = create<EditorStore>()(
             const lastPatch = state.past[state.past.length - 1];
             return {
               past: state.past.slice(0, -1),
-              future: [lastPatch, ...state.future],
+              future: [{ ...lastPatch, canvasTitle: state.canvasTitle }, ...state.future],
               components: applyPatches(state.components, lastPatch.inverse),
+              canvasTitle: lastPatch.canvasTitle,
               selectedId: null,
             };
           }),
@@ -171,9 +178,10 @@ export const useEditorStore = create<EditorStore>()(
             if (state.future.length === 0) return state;
             const nextPatch = state.future[0];
             return {
-              past: [...state.past, nextPatch],
+              past: [...state.past, { ...nextPatch, canvasTitle: state.canvasTitle }],
               future: state.future.slice(1),
               components: applyPatches(state.components, nextPatch.forward),
+              canvasTitle: nextPatch.canvasTitle,
               selectedId: null,
             };
           }),
@@ -238,6 +246,15 @@ export const useEditorStore = create<EditorStore>()(
         past: state.past,
         future: state.future,
       }),
+      // 从 localStorage 恢复时过滤掉无效组件类型（兼容旧数据）
+      merge: (persisted: any, current) => {
+        const merged = { ...current, ...persisted };
+        if (!Array.isArray(merged.components)) return merged;
+        const filtered = merged.components.filter((c: any) => c?.type && VALID_TYPES.has(c.type));
+        if (filtered.length === merged.components.length) return merged;
+        // 过滤了无效组件，同时清空历史栈避免引用不存在的组件
+        return { ...merged, components: filtered, past: [], future: [] };
+      },
     },
   ),
 );

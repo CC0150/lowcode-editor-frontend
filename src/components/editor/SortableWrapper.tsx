@@ -61,7 +61,7 @@ export const SortableWrapper: React.FC<Props> = React.memo(({ id, index }) => {
           {index + 1}. {comp.label}{" "}
           {comp.required && <span className="text-red-500">*</span>}
         </label>
-        {canvasRenderers[comp.type](comp)}
+        {canvasRenderers[comp.type]?.(comp) ?? <div className="text-sm text-red-400">未知组件类型: {comp.type}</div>}
       </div>
     </div>
   );

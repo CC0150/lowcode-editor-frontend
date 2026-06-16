@@ -299,6 +299,29 @@ describe("applyAIGenerated", () => {
     expect(useEditorStore.getState().canvasTitle).toBe("原标题");
   });
 
+  it("AI 生成后清空画布，撤销恢复标题和组件，重做再次清空", () => {
+    useEditorStore.getState().applyAIGenerated(
+      [makeComponent({ id: "ai-1", label: "AI 生成的" })],
+      "面试登记表"
+    );
+    expect(useEditorStore.getState().canvasTitle).toBe("面试登记表");
+
+    useEditorStore.getState().clearCanvas();
+    expect(useEditorStore.getState().components).toHaveLength(0);
+    expect(useEditorStore.getState().canvasTitle).toBe("未命名表单");
+
+    // 撤销清空 → 恢复 AI 生成的组件和标题
+    useEditorStore.getState().undo();
+    expect(useEditorStore.getState().components).toHaveLength(1);
+    expect(useEditorStore.getState().components[0].label).toBe("AI 生成的");
+    expect(useEditorStore.getState().canvasTitle).toBe("面试登记表");
+
+    // 重做 → 再次清空
+    useEditorStore.getState().redo();
+    expect(useEditorStore.getState().components).toHaveLength(0);
+    expect(useEditorStore.getState().canvasTitle).toBe("未命名表单");
+  });
+
   it("AI 生成后可撤销回到之前状态", () => {
     useEditorStore.getState().addComponent("input");
     useEditorStore.getState().addComponent("textarea");
@@ -311,8 +334,9 @@ describe("applyAIGenerated", () => {
     expect(useEditorStore.getState().components).toHaveLength(1);
 
     useEditorStore.getState().undo();
-    // undo 只恢复组件变更，不恢复标题（标题的 set 在 applyChange 之外）
+    // undo 恢复组件变更的同时恢复标题
     expect(useEditorStore.getState().components).toHaveLength(2);
+    expect(useEditorStore.getState().canvasTitle).toBe("自定义表单");
   });
 });
 

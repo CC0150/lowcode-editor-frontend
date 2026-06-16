@@ -72,6 +72,7 @@ export interface ComponentSchema {
 export interface HistoryPatch {
   forward: Patch[]; // 正向补丁（用于重做）
   inverse: Patch[]; // 反向补丁（用于撤销）
+  canvasTitle: string; // 该历史节点对应的画布标题
 }
 
 export interface EditorStore {

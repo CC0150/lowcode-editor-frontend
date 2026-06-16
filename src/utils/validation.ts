@@ -19,7 +19,7 @@ export const componentSchemaZod = z.object({
     id: z.string().optional(), // 流式加载中可能暂时没有 ID
     // 严格限制 type 只能是规定的这几种，AI 乱写的话自动 fallback 到 "input"
     type: z.enum([
-        "input", "number", "textarea", "radio", "select", "button",
+        "input", "number", "textarea", "radio", "select",
         "date", "checkbox", "upload", "rate", "switch", "cascader"
     ]).catch("input"),
     label: z.string().catch("未命名组件"),
